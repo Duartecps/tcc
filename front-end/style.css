@@ -1,0 +1,11 @@
+body {
+    background-color:white;
+    display:block;
+    justify-content:baseline;
+    align-items:end;
+}
+.tittle {
+    color: white;
+    font-size: 300%;
+
+}

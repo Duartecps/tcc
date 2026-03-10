@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Agenda</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(rgba(0, 32, 88, 0.85), rgba(0, 32, 88, 0.85)),
+                    url("background.jpg");
+        background-size: cover;
+        background-position: center;
+        color: white;
+    }
+    
+    /* Navbar */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 25px 80px;
+    }
+    
+    .logo {
+        font-size: 42px;
+        letter-spacing: 10px;
+        font-weight: bold;
+        color: white;
+    }
+    
+    .menu a {
+        text-decoration: none;
+        color: white;
+        margin-left: 40px;
+        font-size: 18px;
+        padding: 10px 20px;
+        background: linear-gradient(45deg, #0A1F44, #1E3A70);
+        border-radius: 30px;
+        transition: 0.3s;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        display: inline-block;
+    }
+    
+    .menu a:hover {
+        transform: scale(1.1);
+        color: #ffffff;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+    }
+    
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+    
+    /* Calendário */
+    .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 20px;
+    }
+    
+    .day {
+        background: rgba(10, 31, 68, 0.9);
+        border-radius: 15px;
+        padding: 15px;
+        height: 130px;
+        cursor: pointer;
+        transition: 0.3s;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    }
+    
+    .day:hover {
+        transform: scale(1.05);
+        border-color: #ffffff;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+    
+    .day-number {
+        font-weight: bold;
+        color: #ffffff;
+    }
+    
+    .event {
+        background: #ffffff;
+        color: #0A1F44;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+        font-weight: bold;
+        text-align: center;
+    }
+    
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+    
+    .modal-content {
+        background: rgba(10, 31, 68, 0.95);
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        width: 400px;
+    }
+    
+    .modal-content h2 {
+        color: #ffffff;
+        margin-bottom: 20px;
+    }
+    
+    .modal-content input {
+        width: 90%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ffffff;
+        border-radius: 5px;
+        background: #0A1F44;
+        color: white;
+    }
+    
+    .modal-content button {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    
+    .modal-content .save-btn {
+        background: #1E3A70;
+        color: white;
+    }
+    
+    .modal-content .save-btn:hover {
+        background: #FFD700;
+        color: #0A1F44;
+    }
+    
+    .modal-content .cancel-btn {
+        background: #FFD700;
+        color: #0A1F44;
+    }
+    
+    .modal-content .cancel-btn:hover {
+        background: #1E3A70;
+        color: white;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="logo">T C C</div>
+    <div class="menu">
+        <a href="index.html">voltar</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2 style="margin-bottom:20px;">Agenda Mensal</h2>
+    <div class="calendar" id="calendar"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h2>Adicionar Lembrete</h2>
+        <input type="text" id="reminderInput" placeholder="Digite seu lembrete aqui..." />
+        <button class="save-btn" onclick="saveReminder()">Salvar</button>
+        <button class="cancel-btn" onclick="closeModal()">Cancelar</button>
+    </div>
+</div>
+
+<script>
+    const calendar = document.getElementById("calendar");
+    const modal = document.getElementById("modal");
+    const reminderInput = document.getElementById("reminderInput");
+    let events = JSON.parse(localStorage.getItem("events")) || {};
+
+    // Cria os dias do calendário
+    for (let i = 1; i <= 31; i++) {
+        const day = document.createElement("div");
+        day.classList.add("day");
+        day.innerHTML = `<div class="day-number">${i}</div>`;
+
+        // Adiciona os eventos existentes ao dia
+        if (events[i]) {
+            events[i].forEach((eventText, index) => {
+                const event = document.createElement("span");
+                event.classList.add("event");
+                event.textContent = eventText;
+
+                // Permite editar ou excluir o evento ao clicar
+                event.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const action = prompt(
+                        `Editar ou excluir o lembrete:\n\n"${eventText}"\n\nDigite o novo texto para editar ou deixe vazio para excluir.`
+                    );
+
+                    if (action === "") {
+                        events[i].splice(index, 1);
+                        if (events[i].length === 0) {
+                            delete events[i];
+                        }
+                    } else if (action !== null) {
+                        events[i][index] = action;
+                    }
+
+                    localStorage.setItem("events", JSON.stringify(events));
+                    location.reload();
+                });
+
+                day.appendChild(event);
+            });
+        }
+
+        // Adiciona um novo lembrete ao dia
+        day.addEventListener("click", () => {
+            openModal(i);
+        });
+
+        calendar.appendChild(day);
+    }
+
+    function openModal(day) {
+        modal.style.display = "flex";
+        reminderInput.setAttribute("data-day", day);
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+        reminderInput.value = "";
+    }
+
+    function saveReminder() {
+        const day = reminderInput.getAttribute("data-day");
+        const reminder = reminderInput.value;
+
+        if (reminder) {
+            if (!events[day]) {
+                events[day] = [];
+            }
+            events[day].push(reminder);
+            localStorage.setItem("events", JSON.stringify(events));
+            location.reload();
+        }
+    }
+</script>
+
+</body>
+</html>
