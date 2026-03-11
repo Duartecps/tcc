@@ -6,4 +6,4 @@ class Produto {
         this.descricao = descricao;
     }
 }
-module.exports = Produto;
+module.exports = Produto;x
