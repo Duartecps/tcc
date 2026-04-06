@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre o Projeto</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(rgba(0, 32, 88, 0.85), rgba(0, 32, 88, 0.85)),
+                        url("background.jpg");
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 80px;
+        }
+
+        .logo {
+            font-size: 42px;
+            letter-spacing: 10px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: white;
+            margin-left: 40px;
+            font-size: 18px;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #0A1F44, #1E3A70);
+            border-radius: 30px;
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+            display: inline-block;
+        }
+
+        .menu a:hover {
+            transform: scale(1.1);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container h1 {
+            font-size: 48px;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .container p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .highlights {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .highlight {
+            background: rgba(10, 31, 68, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+            transition: 0.3s;
+        }
+
+        .highlight:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .highlight h3 {
+            font-size: 22px;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .highlight p {
+            font-size: 16px;
+            color: white;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: white;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">T C C</div>
+        <div class="menu">
+            <a href="index.html">Voltar</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Sobre o Projeto</h1>
+        <p>
+            Este projeto foi desenvolvido para auxiliar na gestão de tarefas, prazos e reuniões. 
+            Com uma interface intuitiva e moderna, ele permite que os usuários organizem suas atividades 
+            de forma eficiente e prática.
+        </p>
+
+        <div class="highlights">
+            <div class="highlight">
+                <h3>Objetivo</h3>
+                <p>Facilitar a organização e o acompanhamento de tarefas importantes, garantindo maior produtividade e organização.</p>
+            </div>
+            <div class="highlight">
+                <h3>Tecnologias</h3>
+                <p>HTML, CSS e JavaScript foram utilizados para criar uma interface moderna e responsiva.</p>
+            </div>
+            <div class="highlight">
+                <h3>Benefícios</h3>
+                <p>Melhora na gestão do tempo, redução de atrasos e maior controle sobre as atividades diárias.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 - Todos os direitos reservados.
+    </div>
+</body>
+</html>

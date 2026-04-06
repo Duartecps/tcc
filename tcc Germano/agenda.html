@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Agenda</title>
+
+<link rel="stylesheet" href="agenda.css">
+
+</head>
+
+<body>
+
+<div class="navbar">
+<div class="logo">T C C</div>
+<div class="menu">
+<a href="index.html">voltar</a>
+</div>
+</div>
+
+<div class="container">
+<h1 class="title">Agenda Mensal</h1>
+
+<div class="month-navigation">
+<button onclick="changeMonth(-1)">&#8592; Mês Anterior</button>
+<h2 id="monthYear"></h2>
+<button onclick="changeMonth(1)">Próximo Mês &#8594;</button>
+</div>
+
+<div class="calendar" id="calendar"></div>
+</div>
+
+
+<div class="modal" id="modal">
+<div class="modal-content">
+
+<h2>Lembrete</h2>
+
+<input type="text" id="reminderInput" placeholder="Digite o lembrete">
+
+<div class="modal-buttons">
+<button class="save-btn" onclick="saveReminder()">Salvar</button>
+<button class="cancel-btn" onclick="closeModal()">Cancelar</button>
+</div>
+
+</div>
+</div>
+
+<script>
+
+const calendar=document.getElementById("calendar");
+const modal=document.getElementById("modal");
+const reminderInput=document.getElementById("reminderInput");
+const monthYear=document.getElementById("monthYear");
+
+const months=[
+"Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+"Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+];
+
+let currentMonth=new Date().getMonth();
+let currentYear=new Date().getFullYear();
+
+let events=JSON.parse(localStorage.getItem("events"))||{};
+
+function renderCalendar(){
+
+calendar.innerHTML="";
+
+monthYear.textContent=`${months[currentMonth]} ${currentYear}`;
+
+const daysInMonth=new Date(currentYear,currentMonth+1,0).getDate();
+
+for(let i=1;i<=daysInMonth;i++){
+
+const day=document.createElement("div");
+day.classList.add("day");
+day.innerHTML=`<div class="day-number">${i}</div>`;
+
+const eventKey=`${currentYear}-${currentMonth}-${i}`;
+
+if(events[eventKey]){
+
+events[eventKey].forEach((eventText,index)=>{
+
+const event=document.createElement("span");
+event.classList.add("event");
+event.textContent=eventText;
+
+event.addEventListener("click",(e)=>{
+
+e.stopPropagation();
+
+const action=prompt(
+`Editar ou excluir o lembrete:\n\n"${eventText}"\n\nDigite novo texto ou deixe vazio para excluir.`
+);
+
+if(action===""){
+events[eventKey].splice(index,1);
+if(events[eventKey].length===0) delete events[eventKey];
+}
+
+else if(action!==null){
+events[eventKey][index]=action;
+}
+
+localStorage.setItem("events",JSON.stringify(events));
+renderCalendar();
+
+});
+
+day.appendChild(event);
+
+});
+
+}
+
+day.addEventListener("click",()=>openModal(eventKey));
+
+calendar.appendChild(day);
+
+}
+
+}
+
+function changeMonth(direction){
+
+currentMonth+=direction;
+
+if(currentMonth<0){
+currentMonth=11;
+currentYear--;
+}
+
+else if(currentMonth>11){
+currentMonth=0;
+currentYear++;
+}
+
+renderCalendar();
+
+}
+
+function openModal(dayKey){
+
+modal.style.display="flex";
+reminderInput.setAttribute("data-day",dayKey);
+
+}
+
+function closeModal(){
+
+modal.style.display="none";
+reminderInput.value="";
+
+}
+
+function saveReminder(){
+
+const dayKey=reminderInput.getAttribute("data-day");
+const reminder=reminderInput.value;
+
+if(reminder){
+
+if(!events[dayKey]) events[dayKey]=[];
+
+events[dayKey].push(reminder);
+
+localStorage.setItem("events",JSON.stringify(events));
+
+}
+
+renderCalendar();
+closeModal();
+
+}
+
+renderCalendar();
+
+</script>
+
+</body>
+</html>
